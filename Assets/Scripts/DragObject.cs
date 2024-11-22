@@ -6,6 +6,7 @@ public class DragObject : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private LayerMask layerMask;
     private bool isDragging = false;
     private Vector3 offset;
 
@@ -14,7 +15,7 @@ public class DragObject : MonoBehaviour
         Vector3 worldMousePos = GetMouseWorldPosition();
         offset = transform.position - worldMousePos;
         isDragging = true;
-       // transform.GetComponent<Collider>().enabled = false;
+        rb.isKinematic = false;
     }
     private void OnMouseDrag()
     {
@@ -26,16 +27,15 @@ public class DragObject : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        var rayOrigin = mainCamera.transform.position;
-        var rayDirection = GetMouseWorldPosition() - mainCamera.transform.position;
-        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit))
+        if(Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, 1f, layerMask))
         {
-            if (hit.transform.CompareTag("DropArea"))
+            if (hit.collider != null)
             {
-                transform.position = hit.transform.position;
+                rb.isKinematic = true;
+                
+                transform.SetPositionAndRotation(hit.transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
             }
         }
-        transform.GetComponent<Collider>().enabled = true;
         isDragging = false;
     }
     private Vector3 GetMouseWorldPosition()

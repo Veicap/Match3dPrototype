@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 3005231253401775708}
   - component: {fileID: 4626165221742638906}
   - component: {fileID: 3666496153701987858}
-  - component: {fileID: -7800113593160597495}
-  m_Layer: 0
-  m_Name: Cube
+  - component: {fileID: 6113253283629349156}
+  m_Layer: 6
+  m_Name: CubeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,8 +120,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  rb: {fileID: 0}
---- !u!54 &-7800113593160597495
+  rb: {fileID: 6113253283629349156}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!54 &6113253283629349156
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
