@@ -7,6 +7,7 @@ public class DragObject : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private DragObjectSO dragObjectSO;
     private bool isDragging = false;
     private Vector3 offset;
 
@@ -31,10 +32,10 @@ public class DragObject : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                rb.isKinematic = true;
-                
-                transform.SetPositionAndRotation(hit.transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
-            }
+                rb.isKinematic = true;               
+                transform.SetPositionAndRotation(DragArea.Instance.DrageArea().transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
+                DragArea.Instance.SetDragObject(this);
+            }  
         }
         isDragging = false;
     }
@@ -43,5 +44,9 @@ public class DragObject : MonoBehaviour
         Vector3 screenMousePos = Input.mousePosition;
         screenMousePos.z = mainCamera.WorldToScreenPoint(transform.position).z;
         return mainCamera.ScreenToWorldPoint(screenMousePos);
+    }
+    public DragObjectSO DragObjectSO()
+    {
+        return dragObjectSO;
     }
 }
