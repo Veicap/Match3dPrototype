@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class DragObject : MonoBehaviour
@@ -16,7 +17,6 @@ public class DragObject : MonoBehaviour
         Vector3 worldMousePos = GetMouseWorldPosition();
         offset = transform.position - worldMousePos;
         isDragging = true;
-        rb.isKinematic = false;
     }
     private void OnMouseDrag()
     {
@@ -32,10 +32,12 @@ public class DragObject : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                rb.isKinematic = true;               
-                transform.SetPositionAndRotation(DragArea.Instance.DrageArea().transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
-                DragArea.Instance.SetDragObject(this);
+                DropArea.Instance.SetDragObject(this, hit);
             }  
+        }
+        else
+        {
+            DropArea.Instance.ClearDragObject(this);
         }
         isDragging = false;
     }

@@ -444,7 +444,7 @@ PrefabInstance:
     - target: {fileID: 4640732805773581158, guid: ba612c9ef1b617a4aa0551d9c952db1c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.29
+      value: 0.73
       objectReference: {fileID: 0}
     - target: {fileID: 4640732805773581158, guid: ba612c9ef1b617a4aa0551d9c952db1c,
         type: 3}
@@ -532,8 +532,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6928b40acad860e4b87ea46633f28421, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragAreaLeft: {fileID: 242418093}
-  dragAreaRight: {fileID: 291012589}
+  dropAreaLeft: {fileID: 242418093}
+  dropAreaRight: {fileID: 291012589}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
