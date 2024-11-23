@@ -42,10 +42,10 @@ public class DropArea : MonoBehaviour
                 }
                 else
                 {
+                    dragObject.GetComponent<Rigidbody>().velocity = new Vector3(4f, 2f, -2f);
                     Debug.Log("Not Match");
-                    Vector3 direction = (dragObject.transform.position - dropAreaRight.transform.position).normalized;
-                    float distance = 2.0f;
-                    dragObject.transform.position += direction * distance;
+                    Debug.Log(dragObject.GetComponent<Rigidbody>());
+                    
                 }
             }
             

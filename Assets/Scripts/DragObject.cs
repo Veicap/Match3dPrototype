@@ -16,6 +16,7 @@ public class DragObject : MonoBehaviour
     {
         Vector3 worldMousePos = GetMouseWorldPosition();
         offset = transform.position - worldMousePos;
+        rb.useGravity = false;
         isDragging = true;
     }
     private void OnMouseDrag()
@@ -23,7 +24,9 @@ public class DragObject : MonoBehaviour
         if(isDragging)
         {
             Vector3 currentMousePosition = GetMouseWorldPosition();
-            transform.position = currentMousePosition + offset;
+            Vector3 cursorPosition = currentMousePosition + offset;
+            rb.position = cursorPosition;
+            rb.MovePosition(new Vector3(rb.position.x, 1f, rb.position.z));
         }
     }
     private void OnMouseUp()
@@ -39,6 +42,7 @@ public class DragObject : MonoBehaviour
         {
             DropArea.Instance.ClearDragObject(this);
         }
+        rb.useGravity = true;
         isDragging = false;
     }
     private Vector3 GetMouseWorldPosition()
