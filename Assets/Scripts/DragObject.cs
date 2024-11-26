@@ -18,6 +18,7 @@ public class DragObject : MonoBehaviour
         offset = transform.position - worldMousePos;
         rb.useGravity = false;
         isDragging = true;
+        DeactivateKinematic(this);
     }
     private void OnMouseDrag()
     {
@@ -31,17 +32,18 @@ public class DragObject : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        if(Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, 1f, layerMask))
+        /*if(Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, 2f, layerMask))
         {
             if (hit.collider != null)
             {
-                DropArea.Instance.SetDragObject(this, hit);
+                DropArea.Instance.SetDragObject(this);
+                Debug.Log("Collision with drop area");
             }  
         }
         else
         {
             DropArea.Instance.ClearDragObject(this);
-        }
+        }*/
         rb.useGravity = true;
         isDragging = false;
     }
@@ -54,5 +56,13 @@ public class DragObject : MonoBehaviour
     public DragObjectSO DragObjectSO()
     {
         return dragObjectSO;
+    }
+    public void ActivateKinematic(DragObject dragObject)
+    {
+        dragObject.rb.isKinematic = true;
+    }
+    public void DeactivateKinematic(DragObject dragObject)
+    {
+        dragObject.rb.isKinematic = false;
     }
 }

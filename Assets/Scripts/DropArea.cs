@@ -19,26 +19,39 @@ public class DropArea : MonoBehaviour
     {
         this.hasDropObjectLeft = hasDropObjectLeft;
     }
-    public void SetDragObject(DragObject dragObject, RaycastHit hit)
+    private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision);
+        SetDragObject(collision.transform.GetComponent<DragObject>());
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        ClearDragObject(collision.transform.GetComponent<DragObject>());
+    }
+    public void SetDragObject(DragObject dragObject)
+    {
+        
         if(!hasDropObjectLeft)
         {
             dragObjectLeft = dragObject;
-            dragObject.transform.SetPositionAndRotation(dropAreaLeft.transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
+            dragObject.transform.SetPositionAndRotation(dropAreaLeft.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
             hasDropObjectLeft = true;
+            dragObject.ActivateKinematic(dragObject);
+            Debug.Log("Abc");
         }
         else
         {
             if(dragObject == dragObjectLeft)
             {
-                dragObject.transform.SetPositionAndRotation(dropAreaLeft.transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
+                dragObject.transform.SetPositionAndRotation(dropAreaLeft.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
             }
             else
             {
                 if (CheckMatch(dragObjectLeft, dragObject))
                 {
                     Debug.Log("Match");
-                    dragObject.transform.SetPositionAndRotation(dropAreaRight.transform.position + new Vector3(0, 0.5f, 0), hit.transform.rotation);
+                    dragObject.transform.SetPositionAndRotation(dropAreaRight.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
                 }
                 else
                 {
@@ -50,7 +63,7 @@ public class DropArea : MonoBehaviour
             }
             
         }
-       
+        
     }
     public void ClearDragObject(DragObject dragObject)
     {
