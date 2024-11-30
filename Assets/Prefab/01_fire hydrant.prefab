@@ -58,6 +58,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1449281294252171914, guid: 318c220737f971d44bdeb0cb17a044b5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -830205112645063633, guid: 318c220737f971d44bdeb0cb17a044b5,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -73,6 +78,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: 01_fire hydrant
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 318c220737f971d44bdeb0cb17a044b5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1408863477461412976, guid: 318c220737f971d44bdeb0cb17a044b5,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -85,15 +95,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 318c220737f971d44bdeb0cb17a044b5,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1847404581581761512}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 318c220737f971d44bdeb0cb17a044b5,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3078288523175521288}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 318c220737f971d44bdeb0cb17a044b5,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5121376277395890293}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 318c220737f971d44bdeb0cb17a044b5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7617428518700722784}
   m_SourcePrefab: {fileID: 100100000, guid: 318c220737f971d44bdeb0cb17a044b5, type: 3}
 --- !u!1 &7836531205011188520 stripped
 GameObject:
@@ -101,24 +111,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6917980160771331705}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1847404581581761512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7836531205011188520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df677f870223ea8468399f3eca2c1cb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  rb: {fileID: 3078288523175521288}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  dragObjectSO: {fileID: 0}
 --- !u!54 &3078288523175521288
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -167,3 +159,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.68101346, y: 0.6302994, z: 1.3780942}
   m_Center: {x: 0.005258009, y: -0.18126515, z: 1.2086389}
+--- !u!114 &7617428518700722784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7836531205011188520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f11938514f80b4b89d1fe99b67f249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

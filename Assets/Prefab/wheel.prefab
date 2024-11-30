@@ -63,6 +63,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: wheel
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fc7461663387aa74480fc09e458fdffe,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4107963325915178442, guid: fc7461663387aa74480fc09e458fdffe,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8456522823272179449, guid: fc7461663387aa74480fc09e458fdffe,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -99,11 +109,11 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc7461663387aa74480fc09e458fdffe,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 329009501575159507}
+      addedObject: {fileID: 5268113604570965023}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc7461663387aa74480fc09e458fdffe,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5268113604570965023}
+      addedObject: {fileID: 1205715868023127378}
   m_SourcePrefab: {fileID: 100100000, guid: fc7461663387aa74480fc09e458fdffe, type: 3}
 --- !u!1 &1140613159014945393 stripped
 GameObject:
@@ -138,24 +148,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &329009501575159507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140613159014945393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df677f870223ea8468399f3eca2c1cb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  rb: {fileID: 2101811620121609947}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  dragObjectSO: {fileID: 11400000, guid: 390fead2cdd206447b165024f832eaec, type: 2}
 --- !u!65 &5268113604570965023
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -177,3 +169,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.4195894, z: 1}
   m_Center: {x: 0, y: -0.0017350316, z: 0}
+--- !u!114 &1205715868023127378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140613159014945393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f11938514f80b4b89d1fe99b67f249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
