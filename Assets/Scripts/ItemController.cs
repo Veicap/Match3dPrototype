@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -8,39 +9,43 @@ public class ItemController : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private LayerMask itemLayer, groundLayer, stageLayer;
+    [SerializeField] private Stage stage;
     private Item itemSelecting;
-    private Stage stage;
 
     private void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
             itemSelecting = GetItemSelecting();
-            if(itemSelecting != null )
+            if(itemSelecting != null)
             {
                 itemSelecting.OnSelect();
+                stage.RemoveItem(itemSelecting);
             }
         }
         if(Input.GetMouseButton(0))
         {
-            itemSelecting = GetItemSelecting();
-            if (itemSelecting != null )
+            if (itemSelecting != null)
             {
                 itemSelecting.OnMove(GetPointToItemFollow());
             }
         }
         if(Input.GetMouseButtonUp(0))
         {
-            stage = GetStageArea();
-            if(stage != null &&  itemSelecting != null)
+            if (itemSelecting != null)
             {
-
-            }
-            else if(itemSelecting != null)
-            {
-                itemSelecting.OnDrop();
+                Stage stage = GetStageArea();
+                if (stage != null)
+                {
+                   stage.AddItem(itemSelecting);
+                }
+                else
+                {
+                    itemSelecting.OnDrop();
+                }
             }
         }
+      
     }
 
     private Item GetItemSelecting()
@@ -61,7 +66,7 @@ public class ItemController : MonoBehaviour
     private Stage GetStageArea()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        // neu cai ray bat trung object thi se tra ve selecting object;
+        // neu cai ray bat trung object thi se tra ve stage object;
         if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, 100, stageLayer))
         {
             if (hit.collider != null)
@@ -75,13 +80,13 @@ public class ItemController : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         // neu cai ray bat trung object thi se tra ve selecting object;
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
         if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, 100, groundLayer))
         {
             if (hit.collider != null)
             {
-                float x = (ray.origin.y - 2) / ray.origin.y;
-                float offset = x * Vector3.Distance(ray.origin, hit.point);
-                return ray.origin + ray.direction * offset;
+                float x = (ray.origin.y - 2) * Vector3.Distance(ray.origin, hit.point) / ray.origin.y;
+                return ray.origin + ray.direction * x;
             }
         }
         return Vector3.zero;
