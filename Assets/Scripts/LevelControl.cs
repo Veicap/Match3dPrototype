@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelControl : MonoBehaviour
 {
     [SerializeField] private List<Item> items = new();
     //[SerializeField] private int level = 0;
-    [SerializeField] private float levelTimer;
+    [SerializeField]
+    private float
+        levelTimer,
+        timeSteak;
     [SerializeField] private TextMeshProUGUI textCounter;
     [SerializeField] private TextMeshProUGUI winStateText, loseStateText;
+    [SerializeField] private Image SteakImage;
     public enum GameState
     {
         Play,

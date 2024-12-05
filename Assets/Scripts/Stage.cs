@@ -9,7 +9,10 @@ public class Stage : MonoBehaviour
     public static Stage Instance { get; set; }
     private readonly List<Item> items = new();
     [SerializeField] Transform point1, point2;
+    [SerializeField] Transform middlePoint;
+    [SerializeField] private float speed;
     public event EventHandler<OnCollectChangedEventArgs> OnCollect;
+    public event EventHandler OnMatch;
     public class OnCollectChangedEventArgs
     {
         public Item item1;
@@ -33,10 +36,11 @@ public class Stage : MonoBehaviour
             if (item.Type == items[0].Type)
             {
                 items.Add(item);
+                OnMatch?.Invoke(this, EventArgs.Empty);
                 item.OnMove(point2.position, Quaternion.identity, 0.2f);
                 item.SetKinematic(true);
-                Invoke(nameof(Collect), 0.5f);
-                
+                StartCoroutine(IEAnim(items[0], items[1]));
+                //Invoke(nameof(Collect), 0.8f);
             }
             else
             {
@@ -59,5 +63,21 @@ public class Stage : MonoBehaviour
             item2 = items[1]
         });
         items.Clear();
+    }
+    private void MoveObjectsToMiddle(Item item1, Item item2)
+    {
+        item1.transform.position = Vector3.MoveTowards(item1.transform.position, middlePoint.position, speed * Time.deltaTime);
+        item2.transform.position = Vector3.MoveTowards(item2.transform.position, middlePoint.position, speed * Time.deltaTime);
+    }
+    private IEnumerator IEAnim(Item item1, Item item2)
+    {
+        yield return new WaitForSeconds(0.2f);
+        float time = 0;
+        while(time <= 1)
+        {
+            time += Time.deltaTime;
+            MoveObjectsToMiddle(item1, item2);
+            yield return null;
+        }
     }
 }
