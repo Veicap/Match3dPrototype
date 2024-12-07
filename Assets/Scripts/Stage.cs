@@ -11,7 +11,7 @@ public class Stage : MonoBehaviour
     [SerializeField] Transform point1, point2;
     [SerializeField] Transform middlePoint;
     [SerializeField] private float speed;
-    public event EventHandler<OnCollectChangedEventArgs> OnCollect;
+    public event EventHandler <OnCollectChangedEventArgs> OnCollect;
     public event EventHandler OnMatch;
     public class OnCollectChangedEventArgs
     {
@@ -40,7 +40,7 @@ public class Stage : MonoBehaviour
                 item.OnMove(point2.position, Quaternion.identity, 0.2f);
                 item.SetKinematic(true);
                 StartCoroutine(IEAnim(items[0], items[1]));
-                //Invoke(nameof(Collect), 0.8f);
+                Invoke(nameof(Collect), 0.8f);
             }
             else
             {
@@ -71,7 +71,7 @@ public class Stage : MonoBehaviour
     }
     private IEnumerator IEAnim(Item item1, Item item2)
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         float time = 0;
         while(time <= 1)
         {
