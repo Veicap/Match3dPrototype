@@ -39,12 +39,12 @@ public class Item : MonoBehaviour
         }
 
     }
-    internal void OnSelect()
+    internal void OffGravity()
     {
         rb.useGravity = false;
     }
 
-    internal void OnDrop()
+    internal void OnGravity()
     {
         rb.useGravity = true;
     }
@@ -56,7 +56,7 @@ public class Item : MonoBehaviour
 
     internal void Force(Vector3 force)
     {
-        OnDrop();
+        OnGravity();
         rb.velocity = Vector3.zero;
         rb.AddForce(force);
     }

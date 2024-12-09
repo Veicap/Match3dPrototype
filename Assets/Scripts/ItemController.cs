@@ -19,7 +19,7 @@ public class ItemController : MonoBehaviour
             itemSelecting = GetItemSelecting();
             if(itemSelecting != null)
             {
-                itemSelecting.OnSelect();
+                itemSelecting.OffGravity();
                 stage.RemoveItem(itemSelecting);
             }
         }
@@ -41,7 +41,7 @@ public class ItemController : MonoBehaviour
                 }
                 else
                 {
-                    itemSelecting.OnDrop();
+                    itemSelecting.OnGravity();
                 }
             }
         }
