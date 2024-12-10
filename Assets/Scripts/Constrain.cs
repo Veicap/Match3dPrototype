@@ -35,5 +35,13 @@ public enum ItemType
     Item_23 = 23,
     Item_24 = 24,
     Item_25 = 25,
+    Item_26 = 26,
+    Item_27 = 27,
+    Item_28 = 28,
+    Item_29 = 29,
+    Item_30 = 30,
+    Item_31 = 31,
+    Item_32 = 32,
+    Item_33 = 33
     
 }

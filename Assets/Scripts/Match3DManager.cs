@@ -1,55 +1,40 @@
-﻿using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Match3DManager : MonoBehaviour
 {
-    public static Match3DManager Instance { get; private set; }
+    [SerializeField] private GameObject PauseGameUI;
 
-    [SerializeField] private List<LevelScriptableObject> levelScriptableObjectList;
-
-    private List<Item> items = new List<Item>();
-    private float levelTimer;
-    private int levelIndex;
-
-    public int LevelIndex => levelIndex;    
-
-    private void Awake()
+    private void Start()
     {
-
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
-        DontDestroyOnLoad(gameObject);
-        levelIndex = -1;
+        HidePauseGameUI();
     }
 
-    public void LoadLevel(int index)
+    private void HidePauseGameUI()
     {
-        // Ensure index is within bounds
-        if (index < 0 || index >= levelScriptableObjectList.Count)
-        {
-            Debug.LogError("Invalid level index!");
-            return;
-        }
-
-        var currentLevel = levelScriptableObjectList[index];
-        items = new List<Item>(currentLevel.itemList);
-        levelTimer = currentLevel.levelTimer;
-
-        Debug.Log($"Level {index} loaded with {items.Count} items and timer set to {levelTimer}.");
+        PauseGameUI.SetActive(false);
     }
-
-    public void ChangeLevel()
+    private void ShowPauseGameUI()
     {
-        levelIndex = (levelIndex + 1) % levelScriptableObjectList.Count;
-        LoadLevel(levelIndex);
+        PauseGameUI.SetActive(true);
     }
-
-    // Properties (Read-only access)
-    public float LevelTimer => levelTimer;
-    public List<Item> ListItems => items; // Expose as read-only list
+    public void PauseGame()
+    {
+        ShowPauseGameUI();
+        Time.timeScale = 0;
+    }
+    public void PlayGame()
+    {
+        Time.timeScale = 1;
+        HidePauseGameUI();
+    }
+    public void ReplayGame()
+    {
+        // load lai level
+        Match3DManagerLevel.Instance.LoadLevel(Match3DManagerLevel.Instance.LevelIndex);
+        LevelControl.Instance.SwitchState(LevelControl.GameState.LoadLevel);
+        Time.timeScale = 1;
+        HidePauseGameUI();
+    }
 }

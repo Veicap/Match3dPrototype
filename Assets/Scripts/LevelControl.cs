@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class LevelControl : MonoBehaviour
 {
@@ -12,6 +11,7 @@ public class LevelControl : MonoBehaviour
     [SerializeField] private float levelTimer;
     [SerializeField] private TextMeshProUGUI textCounter;
     [SerializeField] private TextMeshProUGUI winStateText, loseStateText;
+    [SerializeField] private TextMeshProUGUI levelText;
     public event EventHandler OnLoadLevel;
     
     private List<Item> listItemSpawn;
@@ -40,16 +40,20 @@ public class LevelControl : MonoBehaviour
     {
         listItemSpawn = new List<Item>();
         Stage.Instance.OnCollect += Stage_OnCollect;
-        state = GameState.LoadLevel;
+        
+        
         HideLoseStateText();
         HideWinStateText();
-        Match3DManager.Instance.ChangeLevel(); // start level 1
+        // start level 1
+        Match3DManagerLevel.Instance.ChangeLevel();
+        SwitchState(GameState.LoadLevel);
     }
 
     void OnValidate()
     {
         points = PointSpawn.GeneratePoints(radius, regionSize, rejectionSamples);
     }
+
     /*void OnDrawGizmos()
     {
         Gizmos.color = Color.white;
@@ -64,6 +68,8 @@ public class LevelControl : MonoBehaviour
             }
         }
     }*/
+
+
     private void Update()
     {
         if (state == GameState.Play)
@@ -80,16 +86,17 @@ public class LevelControl : MonoBehaviour
                 SwitchState(GameState.Win);
             }
         }
-        if(state == GameState.LoadLevel)
+        /*if(state == GameState.LoadLevel)
         {
-            OnLoadLevel?.Invoke(this, EventArgs.Empty);
             LoadLevel();
-            
+            OnLoadLevel?.Invoke(this, EventArgs.Empty);
             SwitchState(GameState.Play);
-        }
+
+        }*/
+        Debug.Log(state);
     }
 
-    private void SwitchState(GameState newState)
+    public void SwitchState(GameState newState)
     {
         state = newState;
 
@@ -97,42 +104,47 @@ public class LevelControl : MonoBehaviour
         {
             case GameState.Win:
                 ShowWinStateText();
-                Match3DManager.Instance.ChangeLevel(); // Change Index level
+                Match3DManagerLevel.Instance.ChangeLevel(); // Change Index level
                 StartCoroutine(IESwitchStateLoadLevel());
                 break;
 
             case GameState.Lose:
                 ShowLoseStateText();
-                Match3DManager.Instance.LoadLevel(Match3DManager.Instance.LevelIndex); // Kepp index level
+                Match3DManagerLevel.Instance.LoadLevel(Match3DManagerLevel.Instance.LevelIndex); // Kepp index level
                 StartCoroutine(IESwitchStateLoadLevel());
                 break;
 
             case GameState.LoadLevel:
+                LoadLevel();
+                OnLoadLevel?.Invoke(this, EventArgs.Empty);
                 break;
-
             case GameState.Play:
                 HideLoseStateText();
                 HideWinStateText();
                 break;
         }
+
+       // Debug.LogError(state);
     }
 
     private IEnumerator IESwitchStateLoadLevel()
     {
         
         yield return new WaitForSeconds(0.8f);
-        foreach (var item in listItemSpawn)
-        {
-            Destroy(item.gameObject);
-        }
         SwitchState(GameState.LoadLevel);
     }
 
     private void LoadLevel()
     {
-        items = Match3DManager.Instance.ListItems;
+        foreach (var item in listItemSpawn)
+        {
+            Destroy(item.gameObject);
+        }
+        levelText.text = Match3DManagerLevel.Instance.Level.ToString();
+        items = Match3DManagerLevel.Instance.ListItems;
         listItemSpawn.Clear();
-        HideWinStateText();
+        levelTimer = Match3DManagerLevel.Instance.LevelTimer;
+        Debug.Log(levelTimer);
         SpawnObjects();
         SwitchState(GameState.Play);
     }
@@ -162,10 +174,8 @@ public class LevelControl : MonoBehaviour
     
     private void SpawnObjects()
     {
-        levelTimer = Match3DManager.Instance.LevelTimer;
+        
         var shuffledItems = new List<Item>(items);
-        Debug.Log(shuffledItems.Count);
-        Debug.Log(shuffledItems.Count);
         ShuffleList(shuffledItems);
         int count = 0;
         foreach (var item in shuffledItems)
@@ -177,7 +187,6 @@ public class LevelControl : MonoBehaviour
            
         }
     }
-    
 
     private void ShuffleList<T>(List<T> list)
     {
