@@ -63,6 +63,7 @@ public class Item : MonoBehaviour
 
     internal void Collect()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
+        
     }
 }

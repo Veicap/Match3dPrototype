@@ -11,6 +11,8 @@ public class Match3DManager : MonoBehaviour
     private float levelTimer;
     private int levelIndex;
 
+    public int LevelIndex => levelIndex;    
+
     private void Awake()
     {
 
@@ -22,10 +24,10 @@ public class Match3DManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
-        levelIndex = 0;
+        levelIndex = -1;
     }
 
-    private void LoadLevel(int index)
+    public void LoadLevel(int index)
     {
         // Ensure index is within bounds
         if (index < 0 || index >= levelScriptableObjectList.Count)
@@ -43,10 +45,7 @@ public class Match3DManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        // Increment level index with clamping
-      
-        levelIndex = (levelIndex + 1) % (levelScriptableObjectList.Count);
-        // Load new level
+        levelIndex = (levelIndex + 1) % levelScriptableObjectList.Count;
         LoadLevel(levelIndex);
     }
 

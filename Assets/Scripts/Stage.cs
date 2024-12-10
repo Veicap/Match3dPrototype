@@ -20,9 +20,22 @@ public class Stage : MonoBehaviour
     }
     private void Awake()
     {
-        Instance = this;    
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+          
     }
-    
+    private void Start()
+    {
+        LevelControl.Instance.OnLoadLevel += LevelControl_OnLoadLevel;
+    }
+
+    private void LevelControl_OnLoadLevel(object sender, EventArgs e)
+    {
+        items.Clear();
+    }
+
     public void AddItem(Item item)
     {
         if(items.Count == 0)
@@ -55,17 +68,22 @@ public class Stage : MonoBehaviour
     }
     private void Collect()
     {
-        items[0].Collect();
-        items[1].Collect();
-        OnCollect?.Invoke(this, new OnCollectChangedEventArgs
+        if(items.Count > 0)
         {
-            item1 = items[0],
-            item2 = items[1]
-        });
-        items.Clear();
+            items[0].Collect();
+            items[1].Collect();
+            OnCollect?.Invoke(this, new OnCollectChangedEventArgs
+            {
+                item1 = items[0],
+                item2 = items[1]
+            });
+            items.Clear();
+        }
+        
     }
     private void MoveObjectsToMiddle(Item item1, Item item2)
     {
+        if(item1 == null || item2 == null) return;
         item1.transform.position = Vector3.MoveTowards(item1.transform.position, middlePoint.position, speed * Time.deltaTime);
         item2.transform.position = Vector3.MoveTowards(item2.transform.position, middlePoint.position, speed * Time.deltaTime);
     }

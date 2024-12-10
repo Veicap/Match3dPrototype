@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,14 +7,14 @@ using static UnityEditor.Progress;
 
 public class LevelControl : MonoBehaviour
 {
+    public static LevelControl Instance { get; private set; }
     [SerializeField] private List<Item> items = new();
-    private List<Item> listItemSpawn;
     [SerializeField] private float levelTimer;
     [SerializeField] private TextMeshProUGUI textCounter;
     [SerializeField] private TextMeshProUGUI winStateText, loseStateText;
-
-/*    [SerializeField] private Vector3 minBounds = new(-2.5f, 0.5f, -2.5f);
-    [SerializeField] private Vector3 maxBounds = new(3f, 5f, 2.7f);*/
+    public event EventHandler OnLoadLevel;
+    
+    private List<Item> listItemSpawn;
     public float radius = 1f;
     public Vector3 regionSize = Vector3.one;
     public int rejectionSamples = 30;
@@ -30,7 +31,11 @@ public class LevelControl : MonoBehaviour
     }
 
     private GameState state;
-
+    public GameState State => state;
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         listItemSpawn = new List<Item>();
@@ -38,13 +43,14 @@ public class LevelControl : MonoBehaviour
         state = GameState.LoadLevel;
         HideLoseStateText();
         HideWinStateText();
+        Match3DManager.Instance.ChangeLevel(); // start level 1
     }
 
     void OnValidate()
     {
         points = PointSpawn.GeneratePoints(radius, regionSize, rejectionSamples);
     }
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         Gizmos.color = Color.white;
         Gizmos.DrawWireCube(regionSize / 2, regionSize);
@@ -57,7 +63,7 @@ public class LevelControl : MonoBehaviour
                 Gizmos.DrawSphere(point, displayRadius);
             }
         }
-    }
+    }*/
     private void Update()
     {
         if (state == GameState.Play)
@@ -76,7 +82,9 @@ public class LevelControl : MonoBehaviour
         }
         if(state == GameState.LoadLevel)
         {
+            OnLoadLevel?.Invoke(this, EventArgs.Empty);
             LoadLevel();
+            
             SwitchState(GameState.Play);
         }
     }
@@ -89,11 +97,14 @@ public class LevelControl : MonoBehaviour
         {
             case GameState.Win:
                 ShowWinStateText();
+                Match3DManager.Instance.ChangeLevel(); // Change Index level
                 StartCoroutine(IESwitchStateLoadLevel());
                 break;
 
             case GameState.Lose:
                 ShowLoseStateText();
+                Match3DManager.Instance.LoadLevel(Match3DManager.Instance.LevelIndex); // Kepp index level
+                StartCoroutine(IESwitchStateLoadLevel());
                 break;
 
             case GameState.LoadLevel:
@@ -108,14 +119,17 @@ public class LevelControl : MonoBehaviour
 
     private IEnumerator IESwitchStateLoadLevel()
     {
+        
         yield return new WaitForSeconds(0.8f);
+        foreach (var item in listItemSpawn)
+        {
+            Destroy(item.gameObject);
+        }
         SwitchState(GameState.LoadLevel);
     }
 
     private void LoadLevel()
     {
-
-        Match3DManager.Instance.ChangeLevel();
         items = Match3DManager.Instance.ListItems;
         listItemSpawn.Clear();
         HideWinStateText();
@@ -151,34 +165,11 @@ public class LevelControl : MonoBehaviour
         levelTimer = Match3DManager.Instance.LevelTimer;
         var shuffledItems = new List<Item>(items);
         Debug.Log(shuffledItems.Count);
+        Debug.Log(shuffledItems.Count);
         ShuffleList(shuffledItems);
         int count = 0;
         foreach (var item in shuffledItems)
         {
-            /*bool spawned = false;
-
-            while (!spawned && attempts < maxAttempts)
-            {
-                attempts++;
-                Vector3 pawnPosition = GetRandomPosition();
-                Vector3Int cell = GetCell(pawnPosition);
-
-                if (!occupicedCell.ContainsKey(cell))
-                {
-                    Item spawnItem = Instantiate(item, pawnPosition, Quaternion.identity);
-                    listItemSpawn.Add(spawnItem);
-                    occupicedCell[cell] = true;
-                    spawned = true;
-                }
-
-                yield return null;
-            }
-
-            if (!spawned)
-            {
-                Debug.LogWarning("Không đủ không gian để spawn hết các đối tượng.");
-                break; 
-            }*/
             Vector3 spawnPosition = points[count];
             Item spawnItem = Instantiate(item, spawnPosition, Quaternion.identity);
             listItemSpawn.Add(spawnItem);
@@ -188,28 +179,11 @@ public class LevelControl : MonoBehaviour
     }
     
 
-  
-    /*private Vector3Int GetCell(Vector3 spawnPos)
-    {
-        return new Vector3Int(
-            Mathf.FloorToInt(spawnPos.x),
-            Mathf.FloorToInt(spawnPos.y),
-            Mathf.FloorToInt(spawnPos.z)
-            );
-    }*/
-
-    /*private Vector3 GetRandomPosition()
-    {
-        float randomX = Random.Range(minBounds.x, maxBounds.x);
-        float randomY = Random.Range(minBounds.y, maxBounds.y);
-        float randomZ = Random.Range(minBounds.z, maxBounds.z);
-        return new Vector3(randomX, randomY, randomZ);
-    }*/
     private void ShuffleList<T>(List<T> list)
     {
         for (int i = list.Count - 1; i > 0; i--)
         {
-            int randomIndex = Random.Range(0, i + 1);
+            int randomIndex = UnityEngine.Random.Range(0, i + 1);
             (list[i], list[randomIndex]) = (list[randomIndex], list[i]);
         }
     }
