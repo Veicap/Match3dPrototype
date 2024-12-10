@@ -12,10 +12,13 @@ public class LevelControl : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textCounter;
     [SerializeField] private TextMeshProUGUI winStateText, loseStateText;
 
-    [SerializeField] private Vector3 minBounds = new(-2.5f, 1f, -2.5f);
-    [SerializeField] private Vector3 maxBounds = new(3f, 2f, 2.7f);
-    [SerializeField] private int cellSize = 1;
-    private Dictionary<Vector3, bool> occupicedCell = new();
+/*    [SerializeField] private Vector3 minBounds = new(-2.5f, 0.5f, -2.5f);
+    [SerializeField] private Vector3 maxBounds = new(3f, 5f, 2.7f);*/
+    public float radius = 1f;
+    public Vector3 regionSize = Vector3.one;
+    public int rejectionSamples = 30;
+    public float displayRadius = 0.1f;
+    List<Vector3> points;
 
 
     public enum GameState
@@ -37,6 +40,24 @@ public class LevelControl : MonoBehaviour
         HideWinStateText();
     }
 
+    void OnValidate()
+    {
+        points = PointSpawn.GeneratePoints(radius, regionSize, rejectionSamples);
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireCube(regionSize / 2, regionSize);
+
+        if (points != null)
+        {
+            Gizmos.color = Color.red;
+            foreach (Vector3 point in points)
+            {
+                Gizmos.DrawSphere(point, displayRadius);
+            }
+        }
+    }
     private void Update()
     {
         if (state == GameState.Play)
@@ -55,7 +76,7 @@ public class LevelControl : MonoBehaviour
         }
         if(state == GameState.LoadLevel)
         {
-            StartCoroutine(IELoadLevel());
+            LoadLevel();
             SwitchState(GameState.Play);
         }
     }
@@ -91,15 +112,14 @@ public class LevelControl : MonoBehaviour
         SwitchState(GameState.LoadLevel);
     }
 
-    private IEnumerator IELoadLevel()
+    private void LoadLevel()
     {
 
         Match3DManager.Instance.ChangeLevel();
         items = Match3DManager.Instance.ListItems;
         listItemSpawn.Clear();
-        occupicedCell.Clear();
         HideWinStateText();
-        yield return StartCoroutine(IELoadGame());
+        SpawnObjects();
         SwitchState(GameState.Play);
     }
 
@@ -125,27 +145,21 @@ public class LevelControl : MonoBehaviour
 
     private void ShowLoseStateText() => loseStateText.gameObject.SetActive(true);
 
-    private IEnumerator IELoadGame()
-    {
-        yield return StartCoroutine(IESpawnObjects());
-    }
-    private IEnumerator IESpawnObjects()
+    
+    private void SpawnObjects()
     {
         levelTimer = Match3DManager.Instance.LevelTimer;
         var shuffledItems = new List<Item>(items);
         Debug.Log(shuffledItems.Count);
         ShuffleList(shuffledItems);
-
-        int maxAttempts = 100; // Giới hạn số lần thử spawn
-        int attempts = 0;
-
+        int count = 0;
         foreach (var item in shuffledItems)
         {
-            bool spawned = false;
+            /*bool spawned = false;
 
             while (!spawned && attempts < maxAttempts)
             {
-                attempts++; // Tăng số lần thử spawn
+                attempts++;
                 Vector3 pawnPosition = GetRandomPosition();
                 Vector3Int cell = GetCell(pawnPosition);
 
@@ -160,32 +174,37 @@ public class LevelControl : MonoBehaviour
                 yield return null;
             }
 
-            // Nếu đã thử quá nhiều lần mà không spawn được, bạn có thể dừng hoặc thông báo
             if (!spawned)
             {
                 Debug.LogWarning("Không đủ không gian để spawn hết các đối tượng.");
-                break; // Hoặc xử lý thêm nếu cần
-            }
+                break; 
+            }*/
+            Vector3 spawnPosition = points[count];
+            Item spawnItem = Instantiate(item, spawnPosition, Quaternion.identity);
+            listItemSpawn.Add(spawnItem);
+            count++;
+           
         }
     }
+    
 
-
-    private Vector3Int GetCell(Vector3 spawnPos)
+  
+    /*private Vector3Int GetCell(Vector3 spawnPos)
     {
         return new Vector3Int(
-            Mathf.FloorToInt(spawnPos.x /cellSize),
-            Mathf.FloorToInt(spawnPos.y / cellSize),
-            Mathf.FloorToInt(spawnPos.z / cellSize)
+            Mathf.FloorToInt(spawnPos.x),
+            Mathf.FloorToInt(spawnPos.y),
+            Mathf.FloorToInt(spawnPos.z)
             );
-    }
+    }*/
 
-    private Vector3 GetRandomPosition()
+    /*private Vector3 GetRandomPosition()
     {
         float randomX = Random.Range(minBounds.x, maxBounds.x);
         float randomY = Random.Range(minBounds.y, maxBounds.y);
         float randomZ = Random.Range(minBounds.z, maxBounds.z);
         return new Vector3(randomX, randomY, randomZ);
-    }
+    }*/
     private void ShuffleList<T>(List<T> list)
     {
         for (int i = list.Count - 1; i > 0; i--)
