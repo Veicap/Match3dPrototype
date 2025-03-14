@@ -34,25 +34,37 @@ public class LevelControl : MonoBehaviour
     public GameState State => state;
     private void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        Debug.Log(Instance.ToString());
+        points = PointSpawn.GeneratePoints(radius, regionSize, rejectionSamples);
+        Debug.Log("Radius: " + radius.ToString());
+        Debug.Log("regionSize: " + regionSize.ToString());
+        Debug.Log("rejectionSamples: " + rejectionSamples.ToString());
     }
     private void Start()
     {
         listItemSpawn = new List<Item>();
         Stage.Instance.OnCollect += Stage_OnCollect;
-        
-        
         HideLoseStateText();
         HideWinStateText();
         // start level 1
+        Debug.Log("Game Start - Checking Match3DManagerLevel Instance...");
+        if (Match3DManagerLevel.Instance == null)
+        {
+            Debug.LogError("Match3DManagerLevel.Instance is NULL at Start!");
+            return;
+        }
+
+        Debug.Log("Calling ChangeLevel...");
         Match3DManagerLevel.Instance.ChangeLevel();
+        Debug.Log("After ChangeLevel()");
         SwitchState(GameState.LoadLevel);
+        Debug.Log("Number of points: " + points.Count.ToString());
     }
 
-    void OnValidate()
-    {
-        points = PointSpawn.GeneratePoints(radius, regionSize, rejectionSamples);
-    }
 
     /*void OnDrawGizmos()
     {
@@ -93,7 +105,7 @@ public class LevelControl : MonoBehaviour
             SwitchState(GameState.Play);
 
         }*/
-        Debug.Log(state);
+        /*Debug.Log(state);*/
     }
 
     public void SwitchState(GameState newState)
@@ -129,7 +141,6 @@ public class LevelControl : MonoBehaviour
 
     private IEnumerator IESwitchStateLoadLevel()
     {
-        
         yield return new WaitForSeconds(0.8f);
         SwitchState(GameState.LoadLevel);
     }
@@ -171,22 +182,67 @@ public class LevelControl : MonoBehaviour
 
     private void ShowLoseStateText() => loseStateText.gameObject.SetActive(true);
 
-    
-    private void SpawnObjects()
+
+    void SpawnObjects()
     {
+        Debug.Log("SpawnObjects called");
+
+        if (items == null)
+        {
+            Debug.LogError("items is NULL!");
+            return;
+        }
+        if (items.Count == 0)
+        {
+            Debug.LogError("items is EMPTY!");
+            return;
+        }
+
         
         var shuffledItems = new List<Item>(items);
         ShuffleList(shuffledItems);
+        Debug.Log("Shuffled items count: " + shuffledItems.Count);
+
+        // Kiểm tra points
+        /*if (points == null)
+        {
+            Debug.LogError("points is NULL!");
+            return;
+        }
+        if (points.Count < shuffledItems.Count)
+        {
+            Debug.LogError("points count is LESS than shuffledItems count!");
+            return;
+        }*/
+
+        if (listItemSpawn == null)
+        {
+            Debug.LogWarning("listItemSpawn is NULL! Initializing it now.");
+            listItemSpawn = new List<Item>();
+        }
+
+   
         int count = 0;
         foreach (var item in shuffledItems)
         {
+            if (item == null)
+            {
+                Debug.LogError("Item at index " + count + " is NULL! Skipping...");
+                continue;
+            }
+
             Vector3 spawnPosition = points[count];
+            Debug.Log("Spawning item " + count + " at position " + spawnPosition);
+
             Item spawnItem = Instantiate(item, spawnPosition, Quaternion.identity);
             listItemSpawn.Add(spawnItem);
+
             count++;
-           
         }
+
+        Debug.Log("SpawnObjects completed successfully.");
     }
+
 
     private void ShuffleList<T>(List<T> list)
     {

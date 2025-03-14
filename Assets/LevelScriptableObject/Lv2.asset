@@ -69,4 +69,4 @@ MonoBehaviour:
   - {fileID: -1976608766657051003, guid: fdea4128e71f8fd42bcbe43ed0a30aa5, type: 3}
   - {fileID: 448166106090677323, guid: 2ff84c0e41579c34d823c5ca663b9fb0, type: 3}
   - {fileID: 1205715868023127378, guid: 0835760a570d55f4eb91c57af528a28d, type: 3}
-  levelTimer: 50
+  levelTimer: 200

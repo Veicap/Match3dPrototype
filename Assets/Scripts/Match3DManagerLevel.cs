@@ -16,7 +16,6 @@ public class Match3DManagerLevel : MonoBehaviour
 
     private void Awake()
     {
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

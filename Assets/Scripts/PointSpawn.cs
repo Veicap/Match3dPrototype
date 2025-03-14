@@ -6,17 +6,33 @@ public static class PointSpawn
 {
     public static List<Vector3> GeneratePoints(float radius, Vector3 sampleRegionSize, int numSamplesBeforeRejection = 30)
     {
+        if (sampleRegionSize.x <= 0 || sampleRegionSize.y <= 0 || sampleRegionSize.z <= 0)
+        {
+            Debug.LogError("Invalid sampleRegionSize: " + sampleRegionSize);
+            return new List<Vector3>();
+        }
+
         float cellSize = radius / Mathf.Sqrt(3);
 
-        int[,,] grid = new int[
-            Mathf.CeilToInt(sampleRegionSize.x / cellSize),
-            Mathf.CeilToInt(sampleRegionSize.y / cellSize),
-            Mathf.CeilToInt(sampleRegionSize.z / cellSize)
-        ];
+        int gridSizeX = Mathf.CeilToInt(sampleRegionSize.x / cellSize);
+        int gridSizeY = Mathf.CeilToInt(sampleRegionSize.y / cellSize);
+        int gridSizeZ = Mathf.CeilToInt(sampleRegionSize.z / cellSize);
+
+        Debug.Log($"Grid Size: {gridSizeX}, {gridSizeY}, {gridSizeZ}");
+
+        if (gridSizeX <= 0 || gridSizeY <= 0 || gridSizeZ <= 0)
+        {
+            Debug.LogError("Grid size is invalid!");
+            return new List<Vector3>();
+        }
+
+        int[,,] grid = new int[gridSizeX, gridSizeY, gridSizeZ];
         List<Vector3> points = new List<Vector3>();
         List<Vector3> spawnPoints = new List<Vector3>();
 
         spawnPoints.Add(sampleRegionSize / 2);
+        Debug.Log("Initial spawnPoints count: " + spawnPoints.Count);
+
         while (spawnPoints.Count > 0)
         {
             int spawnIndex = Random.Range(0, spawnPoints.Count);
@@ -33,26 +49,40 @@ public static class PointSpawn
                     Mathf.Cos(angle1)
                 );
                 Vector3 candidate = spawnCentre + dir * Random.Range(radius, 2 * radius);
+
                 if (IsValid(candidate, sampleRegionSize, cellSize, radius, points, grid))
                 {
                     points.Add(candidate);
                     spawnPoints.Add(candidate);
+
                     int cellX = (int)(candidate.x / cellSize);
                     int cellY = (int)(candidate.y / cellSize);
                     int cellZ = (int)(candidate.z / cellSize);
-                    grid[cellX, cellY, cellZ] = points.Count;
+
+                    if (cellX < gridSizeX && cellY < gridSizeY && cellZ < gridSizeZ)
+                    {
+                        grid[cellX, cellY, cellZ] = points.Count;
+                    }
+
                     candidateAccepted = true;
                     break;
                 }
+                else
+                {
+                    Debug.LogWarning($"Candidate {candidate} rejected.");
+                }
             }
+
             if (!candidateAccepted)
             {
                 spawnPoints.RemoveAt(spawnIndex);
             }
         }
 
+        Debug.Log($"Final points count: {points.Count}");
         return points;
     }
+
 
     static bool IsValid(Vector3 candidate, Vector3 sampleRegionSize, float cellSize, float radius, List<Vector3> points, int[,,] grid)
     {

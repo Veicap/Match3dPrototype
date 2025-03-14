@@ -53,7 +53,7 @@ public class ItemController : MonoBehaviour
         // can biet vi tri cua con chuot
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         // neu cai ray bat trung object thi se tra ve selecting object;
-        if(Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit ,100,  itemLayer ))
+        if(Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit ,100,  itemLayer))
         {
             if(hit.collider !=  null)
             {
